@@ -1,50 +1,29 @@
-<?php
-/*analise de viabilidade de projetos de investimento -- PI(25.04)
--Administracao Financeira: gerir suas finanças.
-Três decisões financeiras: crédito, empréstimo, decisão de financiamento -
-está ligado com viabilização do negocio;
-
-Empresa rodando gera lucro -- devo decidir no que investir esse lucro.
-
-Preparar infraestrutura do negócio para preparar
-o ambiente; resultando assim na necessidade de maquinário, móveis, etc.
-
-Organizar no estado, receita federal, receitas, laudos, ...; cada tipo de negócio precisa de
-certos alvaras/documentações para que seja possível um negócio existir de forma legal.
-
-https://www.abf.com.br/ -- associacao brasileira de franquias
-
-
-
-*/
 include_once "conexao.php";
 $acao = $_GET['acao'];
 if (isset($_GET['id'])) {
+    #Criando uma variável para armazenar o valor obtido do GET
     $id = $_GET['id'];
 }
 
-switch case($acao) {
-    case 'inserir' :
+switch ($acao) {
+    case 'inserir':
+        
+        $nome = $_POST['nome'];
+        $email = $_POST['email'];
+        $data = $_POST['data'];
+        $mensagem = $_POST['tx_mensagem'];
 
-        $nome = $_POST('nome');
-        $email = $_POST('email');
-        $data = $_POST('data');
-        $mensagem = $_POST('mensagem');
+        $sql = "INSERT INTO users (user_name, user_email, user_date, user_mensagem) VALUES('$nome', '$email', '$data', '$mensagem')";
 
-        $sql = "INSERT INTO users (user_name, user_email, user_date, user_mensagem) VALUES ('$nome' ,
-        '$email', '$data', '$mensagem' )";
-
-       if (!mysqli_query($conn, $sql)) {
-           die("Erro ao inserir informações do formulário na tabela users: " . mysqli_error($conn));
-       } else {
-           echo "<script language='javascript' type='text/javascript'>
-           alert('Dados cadastrados com sucesso!')
-           window.location.href='crud.php?acao=selecionar'</script>";
-       }
-
-       break;
-
+        if (!mysqli_query($conn, $sql)) {
+       die("Erro ao inserir as informações do formulário na tabela users: ". mysqli_error($conn));
+        } else {
+         echo "<script language='javascript' type='text/javascript'>
+        alert('Dados cadastrados com sucesso!')
+        window.location.href='index.php'</script>";
 }
+        break;
+
 
 case 'montar' :
 
@@ -78,7 +57,7 @@ case 'montar' :
         echo "</tr>";
 
         echo "<tr>";
-        echo "<td width='118'><font size='1' face='Verdana,Arial, Helvetica, sans-serif'>data</font></td>";
+        echo "<td><font face='Verdana, Arial, Helvetica, sans-serif'><>";
         echo "<td width='460'>";
         echo "<input name='data' type='text' class='formbutton' id='data' size='52'
         maxlength='150' value=" . $data['data'] . "</textarea>";
@@ -86,21 +65,27 @@ case 'montar' :
         echo "</tr>";
         echo "</tr>";
 
-        echo "<tr>";
-        echo "<td width='118'><font size='1' face='Verdana, Arial, Helvetica, sans-serif'>Email</font></td>";
-        echo "td width='460'";
-        echo "input name='email' type='text' classs='formbutton' id='email' size='5'
-        maxlength='10' value=" . $email['email'] . " readonly> ";
+        echo " <tr>";
+        echo "<td><font face='Verdana, Arial, Helvetica, sans-serif'><font
+        size='1'>Email<strong>:</strong></font></font></td>";
+        echo " <td rowspan='2'><font size='2'>";
+        echo "<style>textarea{resize:email;}</style>";
+        echo "<textarea name='email' cols='50' rows='3' class='formbutton'>" . htmlspecialchars
+        ($registro['user_email']) . "</textarea>";
         echo "</font></td>";
         echo "</tr>";
-        echo "</tr>";
-
         echo "<tr>";
+
+        echo " <tr>";
         echo "<td><font face='Verdana, Arial, Helvetica, sans-serif'><font
         size='1'>Mensagem<strong>:</strong></font></font></td>";
-        echo "r<>";
+        echo " <td rowspan='2'><font size='2'>";
+        echo "<style>textarea{resize:mensagem;}</style>";
+        echo "<textarea name='mensagem' cols='50' rows='3' class='formbutton'>" . htmlspecialchars
+        ($registro['user_mensagem']) . "</textarea>";
+        echo "</font></td>";
         echo "</tr>";
-        echo "</tr>";
+        echo "<tr>";
 
         echo "<tr>";
         echo "td height='22'></td>";
@@ -117,34 +102,83 @@ case 'montar' :
     break;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 case 'atualizar' :
-    $codigo = $_POST['id'];
-    $nome = $_POST['nome'];
-    $email = $_POST['email'];
-    $data = $_POST['data'];
-    $tx_mensagem = $_POST['tx_mensagem'];
-    break;
+       $codigo = $_POST['id'];
+       $nome = $_POST['nome'];
+       $email = $_POST['email'];
+       $data = $_POST['data'];
+       $mensagem = $_POST['mensagem'];
+    
+      $sql = "UPDATE users SET user_name =  '" . $nome . "', user_email = '" . $email . "', user_date = 
+       '" . $data . "', user_mensagem = '" . $mensagem . "' WHERE user_id = '" . $codigo . "'";
 
-case 'deletar' :
-    
-    
     break;
+    
+    case 'deletar' :
+            //$codigo = $_POST['id'];
+            $sql = "DELETE FROM users WHERE user_id = '" . $id . "'";
+
+            if (!mysqli_query($conn, $sql)) {
+                die('Error: ' . mysqli_error($conn)); 
+
+            } else {
+            echo "<script language='javascript' type='text/javascript'>
+            alert('Dados excluidos com sucesso!')
+            window.location.href='crud.php?acao=selecionar'</script>";
+            }
+        mysqli_close($conn);
+        header("Location:crud.php?acao=selecionar");
+        
+        break;
+
+
+        case 'selecionar' :
+            echo "<meta charset='utf-8'>";
+            echo "<center><table border=1>";
+            echo "<tr>";
+            echo "<th>CODIGO</th>";
+            echo "<th>NOME</th>";
+            echo "<th>E-MAIL</th>";
+            echo "<th>DATA NASCIMENTO</th>";
+            echo "<th>MENSGEM</th>";
+            echo "<th>AÇÃO</th>";
+            echo "</tr>";
+                  
+            $sql = "SELECT * FROM users";
+            $resultado = mysqli_query($conn, $sql) or die("Erro ao retornar dados");
+            
+            echo "<CENTER>Registro cadastrados na base de dados.<br/><CENTER>";
+            echo "<br/>";
+            
+            while ($registro = mysqli_fetch_array($resultado)) {
+                $id = $registro['user_id'];
+                $name = $registro['user_name'];
+                $email = $registro['user_email'];
+                $data = $registro['user_data'];
+                $mensagem = $registro['user_mensagem'];
+                    echo "<tr>";
+                    echo "<td>" . $id . "</td>";
+                    echo "<td>" . $name . "</td>";
+                    echo "<td>" . $email . "</td>";
+                    echo "<td>" . date("d/m/Y", strtotime($data)) . "</td>";
+                    echo "<td>" . $mensagem . "</td>";
+                    echo "<td>
+                            <a href='crud.php?acao=deletar&id=$id'>
+                                <img src='delete.png' alt='Deletar' title='Deletar usuário'>
+                            </a>
+                            <a href='crud.php?acao=montar&id=$id'>
+                                <img src='update.png' alt='Atualizar' title='Atualizar registro'>
+                            </a>
+                            <a href='index.php'>
+                                <img src='insert.png' alt='Inserir' title='Inserir registro'>
+                            </a> ";
+                    echo "</tr>";
+            }
+            mysqli_close($conn) 
+        break;
+
+    default:
+        header("Location:crud.php?acao=selecionar");
+        break;
+
+}
