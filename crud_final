@@ -1,0 +1,150 @@
+<?php
+/*analise de viabilidade de projetos de investimento -- PI(25.04)
+-Administracao Financeira: gerir suas finanças.
+Três decisões financeiras: crédito, empréstimo, decisão de financiamento -
+está ligado com viabilização do negocio;
+
+Empresa rodando gera lucro -- devo decidir no que investir esse lucro.
+
+Preparar infraestrutura do negócio para preparar
+o ambiente; resultando assim na necessidade de maquinário, móveis, etc.
+
+Organizar no estado, receita federal, receitas, laudos, ...; cada tipo de negócio precisa de
+certos alvaras/documentações para que seja possível um negócio existir de forma legal.
+
+https://www.abf.com.br/ -- associacao brasileira de franquias
+
+
+
+*/
+include_once "conexao.php";
+$acao = $_GET['acao'];
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+}
+
+switch case($acao) {
+    case 'inserir' :
+
+        $nome = $_POST('nome');
+        $email = $_POST('email');
+        $data = $_POST('data');
+        $mensagem = $_POST('mensagem');
+
+        $sql = "INSERT INTO users (user_name, user_email, user_date, user_mensagem) VALUES ('$nome' ,
+        '$email', '$data', '$mensagem' )";
+
+       if (!mysqli_query($conn, $sql)) {
+           die("Erro ao inserir informações do formulário na tabela users: " . mysqli_error($conn));
+       } else {
+           echo "<script language='javascript' type='text/javascript'>
+           alert('Dados cadastrados com sucesso!')
+           window.location.href='crud.php?acao=selecionar'</script>";
+       }
+
+       break;
+
+}
+
+case 'montar' :
+
+    $id = $_GET['id'];
+    $sql = 'SELECT * FROM users WHERE user_id =' . id;
+    $resultado = mysqli_query($conn, $sql) or die("Erro ao retornar dados");
+
+    //montando formulário
+    echo "<form method='post' name='dados' action='crud.php?atualizar' onSubmit='return
+    enviardados();'>"; //aqui monta
+    echo "<table width='588' border='0' align='center'>"//aqui gera a tabela
+
+    while ($registro = mysqli_fetch_array($resultado)) {
+        echo "<tr> ";//abre tabela
+        echo "<td width='118'><font size='1' face='Verdana, Arial, Halvetica,
+        sans-serif'>Código:</font></td>";
+        echo "<td width='460'>";
+        echo "<input name='id' type='text' class='formbutton' id='id' size='5'
+        maxlength='10' value=" . $id . " readonly> ";
+        echo "</td>";
+        echo "</tr>";
+
+        echo "<tr>";
+        echo "<td><font face='Verdana, Arial, Helvetica, sans-serif'><font
+        size='1'>Nome<strong>:</strong></font></font></td>";
+        echo "<td rospawn='2'><font size='2'>";
+        echo "<style>textarea{resize:none;}</style>";
+        echo "<textarea name='nome' cols='50' rows='3' class='formbutton'>".htmlspecialchars($registro['user_name'])."</
+        textarea>";
+        echo "</font></td>";
+        echo "</tr>";
+
+        echo "<tr>";
+        echo "<td width='118'><font size='1' face='Verdana,Arial, Helvetica, sans-serif'>data</font></td>";
+        echo "<td width='460'>";
+        echo "<input name='data' type='text' class='formbutton' id='data' size='52'
+        maxlength='150' value=" . $data['data'] . "</textarea>";
+        echo "</font></td>";
+        echo "</tr>";
+        echo "</tr>";
+
+        echo "<tr>";
+        echo "<td width='118'><font size='1' face='Verdana, Arial, Helvetica, sans-serif'>Email</font></td>";
+        echo "td width='460'";
+        echo "input name='email' type='text' classs='formbutton' id='email' size='5'
+        maxlength='10' value=" . $email['email'] . " readonly> ";
+        echo "</font></td>";
+        echo "</tr>";
+        echo "</tr>";
+
+        echo "<tr>";
+        echo "<td><font face='Verdana, Arial, Helvetica, sans-serif'><font
+        size='1'>Mensagem<strong>:</strong></font></font></td>";
+        echo "r<>";
+        echo "</tr>";
+        echo "</tr>";
+
+        echo "<tr>";
+        echo "td height='22'></td>";
+        echo "<td>";
+        echo "<input name='Submit' type='submit' classs='formobjects' value='Atualizar'>";
+        echo "<button type='submit' formaction='crud.php?acao=selecionar'>Selecionar</button>";
+        echo "</td>";
+        echo "</tr>";
+
+        echo "</table>";
+        echo "</form>";   
+    }
+    mysqli_close($conn);
+    break;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+case 'atualizar' :
+    $codigo = $_POST['id'];
+    $nome = $_POST['nome'];
+    $email = $_POST['email'];
+    $data = $_POST['data'];
+    $tx_mensagem = $_POST['tx_mensagem'];
+    break;
+
+case 'deletar' :
+    
+    
+    break;
