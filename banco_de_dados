@@ -1,0 +1,57 @@
+
+
+CREATE TABLE departamento (
+cnpj VARCHAR(255) PRIMARY KEY NOT NULL,
+identidade_empregado INT(20) NOT NULL,
+nome_departamento VARCHAR(50) NOT NULL);
+
+CREATE TABLE empregado_registrado (
+id_chave INT(20) PRIMARY KEY NOT NULL,
+percurso_do_dia VARCHAR(30) NOT NULL,
+produtos_vendidos INT NOT NULL);
+
+CREATE TABLE empregado (
+nome VARCHAR(50) NOT NULL,
+cpf INT(255) NOT NULL,
+id_chave INT(20) PRIMARY KEY NOT NULL);
+
+CREATE TABLE carros_empresa (
+placa VARCHAR(30) PRIMARY KEY NOT NULL,
+modelo CHAR(30) NOT NULL,
+ano TINYINT(5) NOT NULL);
+
+CREATE TABLE carro_alugado (
+placa VARCHAR(30) PRIMARY KEY NOT NULL,
+id_chave INT(20) NOT NULL);
+
+CREATE TABLE pontos_chave (
+cep VARCHAR(30) NOT NULL,
+rua VARCHAR(50) NOT NULL,
+id_percurso INT(30) PRIMARY KEY NOT NULL);
+
+CREATE TABLE rotas_estrategicas (
+id_percurso VARCHAR(30) PRIMARY KEY NOT NULL);
+
+CREATE TABLE id_percurso (
+numeracao_rota INT(30) PRIMARY KEY NOT NULL);
+
+CREATE TABLE produtos (
+nome CHAR(30) NOT NULL,
+marca CHAR(30) NOT NULL,
+registro_produto INT(50) PRIMARY KEY NOT NULL);
+
+CREATE TABLE nota_fiscal (
+nome_cliente CHAR(30) NOT NULL,
+produto_vendido INT(50) NOT NULL,
+cpf_cliente VARCHAR(30) NOT NULL,
+PRIMARY KEY (,produto_vendido,cpf_cliente));
+
+ALTER TABLE departamento ADD CONSTRAINT departamento_identidade_empregado_empregado_registrado_id_chave FOREIGN KEY (identidade_empregado) REFERENCES empregado_registrado(id_chave);
+ALTER TABLE empregado_registrado ADD CONSTRAINT empregado_registrado_percurso_do_dia_pontos_chave_cep FOREIGN KEY (percurso_do_dia) REFERENCES pontos_chave(cep);
+ALTER TABLE empregado_registrado ADD CONSTRAINT empregado_registrado_produtos_vendidos_nota_fiscal_produto_vendido FOREIGN KEY (produtos_vendidos) REFERENCES nota_fiscal(produto_vendido);
+ALTER TABLE empregado ADD CONSTRAINT empregado_id_chave_empregado_registrado_id_chave FOREIGN KEY (id_chave) REFERENCES empregado_registrado(id_chave);
+ALTER TABLE carro_alugado ADD CONSTRAINT carro_alugado_placa_carros_empresa_placa FOREIGN KEY (placa) REFERENCES carros_empresa(placa);
+ALTER TABLE carro_alugado ADD CONSTRAINT carro_alugado_id_chave_empregado_registrado_id_chave FOREIGN KEY (id_chave) REFERENCES empregado_registrado(id_chave);
+ALTER TABLE pontos_chave ADD CONSTRAINT pontos_chave_id_percurso_id_percurso_numeracao_rota FOREIGN KEY (id_percurso) REFERENCES id_percurso(numeracao_rota);
+ALTER TABLE rotas_estrategicas ADD CONSTRAINT rotas_estrategicas_id_percurso_pontos_chave_cep FOREIGN KEY (id_percurso) REFERENCES pontos_chave(cep);
+ALTER TABLE nota_fiscal ADD CONSTRAINT nota_fiscal_produto_vendido_produtos_registro_produto FOREIGN KEY (produto_vendido) REFERENCES produtos(registro_produto);
