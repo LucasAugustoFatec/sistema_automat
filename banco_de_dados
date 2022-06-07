@@ -41,6 +41,7 @@ marca CHAR(30) NOT NULL,
 registro_produto INT(50) PRIMARY KEY NOT NULL);
 
 CREATE TABLE nota_fiscal (
+email_cliente CHAR(30) NOT NULL,
 nome_cliente CHAR(30) NOT NULL,
 produto_vendido INT(50) NOT NULL,
 cpf_cliente VARCHAR(30) NOT NULL,
